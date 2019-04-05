@@ -1,0 +1,22 @@
+.w-100{
+  border: 4px solid #007bff;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+.btn-pane{
+  width: 90%;
+  margin-top: 50px;
+  margin-left: 20px;
+}
+
+.body {
+  margin: 50px;
+}
+
+.header{
+  text-align: center;
+  margin: 50px 50px
+}
+
+

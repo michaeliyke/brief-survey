@@ -1,17 +1,33 @@
-<div>
-  <div>
-    <h1>{{title}}</h1>
+<div class="container">
+  <div class="header">
+    <h1>{{ title }}</h1>
   </div>
-<div>
-  <app-slider></app-slider>
-</div>
-<div>
-<button type="button" class="btn btn-primary" (click)="initPrev()" [disabled]="prevStop">
-{{prevStop ? "First slide": back}}
-</button>
-<button type="button" [disabled]="nextStop" class="btn btn-primary" (click)="initNext()">
-{{nextStop ? finish: next}}
-</button>
-<p></p>
-</div>
+  <div class="w-100 bg-primary"></div>
+  <form class="col-10 body">
+    <div>
+      <app-slider></app-slider>
+    </div>
+    <div class="row justify-content-between btn-pane">
+      <div class="">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="initPrev()"
+          [disabled]="prevStop"
+        >
+          {{ prevStop ? "First slide" : back }}
+        </button>
+      </div>
+      <div class="">
+        <button
+          type="button"
+          [disabled]="nextStop"
+          class="btn btn-primary"
+          (click)="initNext()"
+        >
+          {{ nextStop ? finish : next }}
+        </button>
+      </div>
+    </div>
+  </form>
 </div>
