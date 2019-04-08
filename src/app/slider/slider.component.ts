@@ -1,48 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { SliderService } from '../services/slider.service';
-import { ISlide } from '../islide';
-import { IQuestion } from '../iquestion';
+import { Component, OnInit } from "@angular/core";
+import { SliderService } from "../services/slider.service";
+import { ISlide } from "../islide";
+import { IQuestion } from "../iquestion";
 
 @Component({
-  selector: 'app-slider',
-  templateUrl: './slider.component.html',
-  styleUrls: ['./slider.component.css']
+  selector: "app-slider",
+  templateUrl: "./slider.component.html",
+  styleUrls: ["./slider.component.css"]
 })
 export class SliderComponent implements OnInit {
   data: ISlide[] = [
     {
-      slideIndex: 0,
-      questions: [
-        {
-          questionId: 0,
-          question: 'Are you often ticked off?',
-          options: ['yea I am', 'off course not', 'Not sure!']
-        },
-        {
-          questionId: 1,
-          question:
-            'I always wake up early but as soon as it\'s eight at night I fling me over the bed',
-          options: [
-            'That\'s me',
-            'That\'s not me',
-            'That may be me',
-            'It depends'
-          ]
-        }
-      ]
-    },
-    {
       slideIndex: 1,
       questions: [
         {
-          questionId: 3,
-          question: 'I don\'t get angry when I am hungry. ',
-          options: ['True', 'False', 'Both', 'It depends']
+          questionId: 1,
+          question: "Are you often ticked off?",
+          options: ["yea I am", "off course not", "Not sure!"]
         },
         {
           questionId: 2,
-          question: 'If I look at a mirror,  who will I see?',
-          options: ['You', 'me', 'them', 'us']
+          question:
+            "I always wake up early but as soon as it's eight at night I fling me over the bed",
+          options: ["That's me", "Not me", "That may be me", "It depends"]
         }
       ]
     },
@@ -50,14 +30,14 @@ export class SliderComponent implements OnInit {
       slideIndex: 2,
       questions: [
         {
-          questionId: 4,
-          question: 'Are you the kind that hates anything beans with passion?',
-          options: ['Yes', 'No', 'It\'s hard to say', 'Not sure']
+          questionId: 3,
+          question: "I don't get angry when I am hungry. ",
+          options: ["True", "False", "Both", "It depends"]
         },
         {
-          questionId: 5,
-          question: 'I took an egg out of a dozens eggs. Ho many do I have?',
-          options: [11, 1, 12, 13]
+          questionId: 4,
+          question: "If I look at a mirror,  who will I see?",
+          options: ["You", "me", "them", "us"]
         }
       ]
     },
@@ -65,12 +45,27 @@ export class SliderComponent implements OnInit {
       slideIndex: 3,
       questions: [
         {
+          questionId: 5,
+          question: "Are you the kind that hates anything beans with passion?",
+          options: ["Yes", "No", "It's hard to say", "Not sure"]
+        },
+        {
+          questionId: 6,
+          question: 'I took an egg out of a dozens eggs. Ho many do I have?',
+          options: [11, 1, 12, 13]
+        }
+      ]
+    },
+    {
+      slideIndex: 4,
+      questions: [
+        {
           questionId: 7,
           question: 'I may eat rice but I never feel like doing so.',
           options: ['Not really', 'Exactly', 'Not all', 'MAy be']
         },
         {
-          questionId: 6,
+          questionId: 8,
           question:
             'I\'m not a programmer but we are three on our tech team. Felix is on Network, who am I?',
           options: [
@@ -83,10 +78,10 @@ export class SliderComponent implements OnInit {
       ]
     },
     {
-      slideIndex: 4,
+      slideIndex: 5,
       questions: [
         {
-          questionId: 8,
+          questionId: 9,
           question:
             'Nobody should ever mention the name \'beans\' to me nor any of its derivatives. Never!',
           options: [
@@ -99,10 +94,10 @@ export class SliderComponent implements OnInit {
       ]
     },
     {
-      slideIndex: 5,
+      slideIndex: 6,
       questions: [
         {
-          questionId: 9,
+          questionId: 10,
           question:
             'If you cook garri, I will eat. But I never will cook garri on a day. That\'s how I feel about it.',
           options: [
@@ -115,10 +110,10 @@ export class SliderComponent implements OnInit {
       ]
     },
     {
-      slideIndex: 6,
+      slideIndex: 7,
       questions: [
         {
-          questionId: 10,
+          questionId: 11,
           question:
             'I may occasionaly use superghetti or noodles, but please nobody should speak to me about any heavier food.',
           options: [
@@ -143,6 +138,13 @@ export class SliderComponent implements OnInit {
   question: string;
   get slide(): ISlide {
     return this.sliderService.slide;
+  }
+  get totalNumberQuestions(): number {
+      const lastSlide = this.sliderService.slides[
+        this.sliderService.slides.length - 1
+      ];
+      const lastQuestion = lastSlide.questions[lastSlide.questions.length - 1];
+      return lastQuestion.questionId;
   }
 
   get message(): string {

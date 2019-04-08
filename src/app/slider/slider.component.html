@@ -2,11 +2,22 @@
   <strong>1/27</strong>
   {{ message }}
 </p> -->
-<ul *ngFor="let quest of slide.questions">
-  <h5>
-    {{quest.question}}
-  </h5>
-  <p *ngFor="let option of quest.options"><input  type="radio" class="radio-button" value="" /> <label>{{option}}</label></p>
+<ul *ngFor="let quest of slide.questions; let count = index;" class="slide-questions">
+  <div *ngIf="count + 1 == 1;" class="slide-info">
+    <p>Slide {{slide.slideIndex}} </p>
+    <hr class="bg-secondary w-100 w-secondary" />
+    <p>{{quest.questionId}} / {{totalNumberQuestions}}</p>
+  </div>
+  <span class="questionId">{{ quest.questionId }}</span>
+  <div class="question-panel">
+    <h5 class="question">
+      {{ quest.question }}
+    </h5>
+    <p *ngFor="let option of quest.options">
+      <input type="radio" class="radio-button" value="" />
+      <label>{{ option }}</label>
+    </p>
+  </div>
 </ul>
 <!-- <ul>
   <p><input class="radio-button" type="radio" value=""><label for="">The number is not 1 but 01</label></p>
