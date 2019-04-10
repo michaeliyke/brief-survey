@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ISlide } from '../islide';
 import { IQuestion } from '../iquestion';
+import { FormControl } from '@angular/forms';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,10 @@ export class SliderService {
   nextStop: boolean;
   slideId = 0;
   slides: ISlide[];
+  formControls = {} as {
+    selected: FormControl,
+    value: string;
+  };
   get questionId(): number {
     return this.questionId;
   }

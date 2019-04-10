@@ -1,12 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { SliderService } from "../services/slider.service";
-import { ISlide } from "../islide";
-import { IQuestion } from "../iquestion";
+import { Component, OnInit } from '@angular/core';
+import { SliderService } from '../services/slider.service';
+import { ISlide } from '../islide';
+import { IQuestion } from '../iquestion';
+import { FormControl, Form, NgForm } from '@angular/forms';
 
 @Component({
-  selector: "app-slider",
-  templateUrl: "./slider.component.html",
-  styleUrls: ["./slider.component.css"]
+  selector: 'app-slider',
+  templateUrl: './slider.component.html',
+  styleUrls: ['./slider.component.css']
 })
 export class SliderComponent implements OnInit {
   data: ISlide[] = [
@@ -15,14 +16,14 @@ export class SliderComponent implements OnInit {
       questions: [
         {
           questionId: 1,
-          question: "Are you often ticked off?",
-          options: ["yea I am", "off course not", "Not sure!"]
+          question: 'Are you often ticked off?',
+          options: ['yea I am', 'off course not', 'Not sure!']
         },
         {
           questionId: 2,
           question:
-            "I always wake up early but as soon as it's eight at night I fling me over the bed",
-          options: ["That's me", "Not me", "That may be me", "It depends"]
+            'I always wake up early but as soon as it\'s eight at night I fling me over the bed',
+          options: ['That\'s me', 'Not me', 'That may be me', 'It depends']
         }
       ]
     },
@@ -31,13 +32,13 @@ export class SliderComponent implements OnInit {
       questions: [
         {
           questionId: 3,
-          question: "I don't get angry when I am hungry. ",
-          options: ["True", "False", "Both", "It depends"]
+          question: 'I don\'t get angry when I am hungry. ',
+          options: ['True', 'False', 'Both', 'It depends']
         },
         {
           questionId: 4,
-          question: "If I look at a mirror,  who will I see?",
-          options: ["You", "me", "them", "us"]
+          question: 'If I look at a mirror,  who will I see?',
+          options: ['You', 'me', 'them', 'us']
         }
       ]
     },
@@ -46,8 +47,8 @@ export class SliderComponent implements OnInit {
       questions: [
         {
           questionId: 5,
-          question: "Are you the kind that hates anything beans with passion?",
-          options: ["Yes", "No", "It's hard to say", "Not sure"]
+          question: 'Are you the kind that hates anything beans with passion?',
+          options: ['Yes', 'No', 'It\'s hard to say', 'Not sure']
         },
         {
           questionId: 6,
@@ -136,27 +137,50 @@ export class SliderComponent implements OnInit {
 
   slides: ISlide[];
   question: string;
+  formControls: any;
   get slide(): ISlide {
     return this.sliderService.slide;
   }
   get totalNumberQuestions(): number {
-      const lastSlide = this.sliderService.slides[
-        this.sliderService.slides.length - 1
-      ];
-      const lastQuestion = lastSlide.questions[lastSlide.questions.length - 1];
-      return lastQuestion.questionId;
+    const lastSlide = this.sliderService.slides[
+      this.sliderService.slides.length - 1
+    ];
+    const lastQuestion = lastSlide.questions[lastSlide.questions.length - 1];
+    return lastQuestion.questionId;
   }
 
   get message(): string {
     return this.questions[this.sliderService.slideId];
   }
+  get prevStop(): boolean {
+    return this.sliderService.prevStop;
+  }
+  get nextStop(): boolean {
+    return this.sliderService.nextStop;
+  }
+  initPrev(): void {
+    this.sliderService.modifyId(-1);
+    // console.log('Back to page ', this.slideId);
+  }
+  initNext(): void {
+    this.nextStop ? this.todo() : this.sliderService.modifyId(1);
+    // console.log('Forward to page ', this.slideId);
+  }
+
   constructor(private sliderService: SliderService) {
     this.sliderService.slides = this.data;
     const id = this.sliderService.modifyId(0);
     // this.slide = this.sliderService.slide;
     this.slides = this.sliderService.slides;
     // console.log('Michael C Iyke', id, this.data[id]);
+    this.sliderService.formControls = this.formControls;
   }
 
   ngOnInit() {}
+  save(data: NgForm): void {
+    console.log(data);
+  }
+  todo() {
+    console.log('Submitting data...');
+  }
 }

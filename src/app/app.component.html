@@ -3,31 +3,5 @@
     <h1>{{ title }}</h1>
   </div>
   <div class="w-100 bg-primary"></div>
-  <form class="col-10 body">
-    <div>
       <app-slider></app-slider>
-    </div>
-    <div class="row justify-content-between btn-pane">
-      <div class="">
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="initPrev()"
-          [disabled]="prevStop"
-        >
-          {{ prevStop ? "First slide" : back }}
-        </button>
-      </div>
-      <div class="">
-        <button
-          type="button"
-          [disabled]="nextStop"
-          class="btn btn-primary"
-          (click)="initNext()"
-        >
-          {{ nextStop ? finish : next }}
-        </button>
-      </div>
-    </div>
-  </form>
 </div>
