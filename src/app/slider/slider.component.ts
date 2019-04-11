@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SliderService } from '../services/slider.service';
 import { ISlide } from '../islide';
 import { IQuestion } from '../iquestion';
-import { FormControl, Form, NgForm } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
+import { SurveyData } from '../interfaces/survey-data';
 
 @Component({
   selector: 'app-slider',
@@ -123,6 +124,17 @@ export class SliderComponent implements OnInit {
             'It\'s debatable',
             'No comment'
           ]
+        },
+        {
+          questionId: 12,
+          question:
+            'What is my name?',
+          options: [
+            'No idea!',
+            'Iyke',
+            'What ever I say!',
+            'Not sure what your name is'
+          ]
         }
       ]
     }
@@ -137,7 +149,14 @@ export class SliderComponent implements OnInit {
 
   slides: ISlide[];
   question: string;
-  formControls: any;
+  formControls: FormControl[];
+  form: FormGroup; // In place of customerForm: FormGroup;
+  surveydata = new SurveyData(); // In place of customer = new Customer()
+
+  currentControls: string[];
+  prevSlideId: number;
+  nameString: string;
+
   get slide(): ISlide {
     return this.sliderService.slide;
   }
@@ -158,29 +177,67 @@ export class SliderComponent implements OnInit {
   get nextStop(): boolean {
     return this.sliderService.nextStop;
   }
-  initPrev(): void {
-    this.sliderService.modifyId(-1);
-    // console.log('Back to page ', this.slideId);
+
+  setOptions(
+    questionId: number,
+    optionLength: number,
+    slideIndex: number,
+    init: boolean = false
+  ): void {
+    if (this.currentControls.length < 1 || init) {
+      this.currentControls = [];
+    }
+    if (this.prevSlideId !== questionId) {
+      let index: number;
+      for (index = 0; index < optionLength; index++) {
+        this.currentControls.push(`option${slideIndex}${questionId}`);
+      }
+      this.buildForm();
+      this.prevSlideId = questionId;
+    }
   }
-  initNext(): void {
-    this.nextStop ? this.todo() : this.sliderService.modifyId(1);
-    // console.log('Forward to page ', this.slideId);
+
+  buildForm(): void {
+    const stb = {};
+    this.currentControls.forEach(name => {
+      stb[name] = new FormControl();
+      this.form = new FormGroup(stb); // Creates the root form group for our form model or data
+    });
+  }
+  log(s: string, o: any = null): string {
+    console.warn(s, o);
+    return '';
   }
 
   constructor(private sliderService: SliderService) {
     this.sliderService.slides = this.data;
-    const id = this.sliderService.modifyId(0);
-    // this.slide = this.sliderService.slide;
-    this.slides = this.sliderService.slides;
-    // console.log('Michael C Iyke', id, this.data[id]);
-    this.sliderService.formControls = this.formControls;
+    this.sliderService.modifyId(0);
   }
 
-  ngOnInit() {}
-  save(data: NgForm): void {
-    console.log(data);
+  ngOnInit() {
+    this.setAllControls();
   }
-  todo() {
-    console.log('Submitting data...');
+  initPrev(): void {
+    this.sliderService.modifyId(-1);
+    this.setAllControls();
   }
+  initNext(): void {
+    this.nextStop ? this.todo() : this.sliderService.modifyId(1);
+    this.setAllControls();
+  }
+
+  setAllControls(): void {
+    this.currentControls = [];
+    this.slides = this.sliderService.slides;
+    this.slide.questions.forEach((question, i) => {
+      this.setOptions(
+        question.questionId,
+        question.options.length,
+        this.slide.slideIndex
+      );
+    });
+  }
+
+  save(): void {}
+  todo(): void {}
 }

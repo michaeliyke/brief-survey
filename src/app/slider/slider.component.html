@@ -1,35 +1,35 @@
 <form
 action="actions.php"
   class="slide-questions"
-  #formA="ngForm"
-  (ngSubmit)="save(formA)"
+  [formGroup]="form"
 >
-<div class="col-10 body" *ngFor="let quest of slide.questions; let count = index;" >
+
+<div class="col-10 body" *ngFor="let quest of slide.questions; let count = index; " >
   <div *ngIf="count + 1 == 1" class="slide-info">
     <p>Slide {{ slide.slideIndex }}</p>
     <hr class="bg-light w-100 w-secondary" />
     <p>{{ quest.questionId }} / {{ totalNumberQuestions }}</p>
   </div>
-  <div class="question-panel">
+  <div class="question-opanel">
     <h5 class="question">
-        <span class="questionId">{{ quest.questionId }}</span>
+      <span class="questionId">{{ quest.questionId }}</span>
       {{ quest.question }}
     </h5>
     <p *ngFor="let option of quest.options; let i = index">
       <input
-        type="radio"
-        class="radio-button"
-        name="radio-button"
-        id="one"
-        value="s{{ slide.slideIndex }}q{{ quest.questionId }}o{{ i }}"
-        ngModel
-        #one="ngModel"
+      type="radio"
+      class="radio-button"
+      [name]="'option'+slide.slideIndex+quest.questionId"
+      [formControlName]="'option'+slide.slideIndex+quest.questionId"
+      [value]="'S' + slide.slideIndex + 'Q' + quest.questionId + 'O' + i"
       />
-      <label>{{ option }}</label>
+      <label for="option">{{option}}</label>
     </p>
   </div>
+  <!-- {{slide | json}} -->
+  <p></p>
 </div>
-  <!-- {{collect | json}} -->
+
   <div class="row justify-content-between btn-pane">
     <div class="">
       <button type="button" class="btn btn-primary" (click)="initPrev()" [disabled]="prevStop">
@@ -37,7 +37,7 @@ action="actions.php"
       </button>
     </div>
     <div class="">
-      <button [type]="nextStop ? 'submit' : 'button'" class="btn btn-primary" (click)="initNext()">
+      <button [type]="nextStop ? 'submit' : 'button'" class="btn btn-primary" (click)="initNext($event)">
         {{ nextStop ? 'Submit survey' : 'Next slide' }}
       </button>
     </div>
