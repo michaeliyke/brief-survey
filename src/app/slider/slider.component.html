@@ -17,13 +17,15 @@ action="actions.php"
     </h5>
     <p *ngFor="let option of quest.options; let i = index;">
       <input
+      required
       type="radio"
       class="radio-button"
       [name]="'option'+slide.slideIndex+quest.questionId"
       [formControlName]="'option'+slide.slideIndex+quest.questionId"
-      [value]="'S' + slide.slideIndex + 'Q' + quest.questionId + 'O' + i"
-      [checked]="getControl('option'+slide.slideIndex+quest.questionId) === 'S' + slide.slideIndex + 'Q' + quest.questionId + 'O' + i "
+      [value]="option  | stringDelimiter: '_'"
+      [checked]="getControl('option'+slide.slideIndex+quest.questionId) === (option  | stringDelimiter: '_')"
       />
+      <!-- [checked]="getControl('option'+slide.slideIndex+quest.questionId) === (option  | stringDelimiter: '_')" -->
       <label for="option">{{option}}</label>
     </p>
   </div>
@@ -44,6 +46,7 @@ action="actions.php"
     </div>
   </div>
 </form>
-{{currentControls}} <br>
+{{form.valid}}
+ <br>
 <!-- {{todo()?.value}} <br /> -->
-{{save() | json}}
+<!-- {{form.value}} -->

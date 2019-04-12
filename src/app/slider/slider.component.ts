@@ -42,7 +42,7 @@ export class SliderComponent implements OnInit {
           options: ['You', 'me', 'them', 'us']
         }
       ]
-    },
+    },/* 
     {
       slideIndex: 3,
       questions: [
@@ -137,7 +137,7 @@ export class SliderComponent implements OnInit {
           ]
         }
       ]
-    }
+    } */
   ];
   questions = [
     'Are you the kind that hates anything beans with passion?',
@@ -192,25 +192,26 @@ export class SliderComponent implements OnInit {
     this.sliderService.modifyId(-1);
     this.setAllControls();
   }
-  initNext(): void {
+  initNext(event: Event): void {
+   if( this.checkSelection(event)) {
     this.addControls(this.currentControls); // Retrieve the value of current controls and add them to value stk for ref
-    this.nextStop ? this.todo() : this.sliderService.modifyId(1);
+    this.nextStop ? this.submitSurvey() : this.sliderService.modifyId(1);
     this.setAllControls();
+  }
   }
 
   addControls(controls: string[]): void {
     controls.forEach((control: string) => {
       try{
         this.controlValues[control] = this.form.get(control).value || '';
-      } catch(error) {
+      } catch (error) {
         this.controlValues[control] = '';
       }
     });
   }
 
-  getControl(control: string): string {
-    const val = this.controlValues[control];
-    return val;
+  getControl(control: string): any {
+    return this.controlValues[control];
   }
 
 
@@ -257,10 +258,19 @@ export class SliderComponent implements OnInit {
     });
   }
 
-  save(): void {
-    return this.form.value;
+  checkSelection(event: Event): boolean {
+    for (const control of this.currentControls) {
+      const cont = this.form.get(control);
+      if (cont.invalid === false) {
+        alert('Sorry! Navigation can not occur right now.');
+        return false;
+      }
+    }
+    return true;
   }
-  todo(): AbstractControl | null {
-    return this.form.get('option11');
+  submitSurvey(): void {
+    alert(JSON.stringify(this.controlValues));
   }
+
+
 }
