@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SliderService } from '../services/slider.service';
 import { ISlide } from '../islide';
 import { IQuestion } from '../iquestion';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, AbstractControl, FormBuilder } from '@angular/forms';
 import { SurveyData } from '../interfaces/survey-data';
 
 @Component({
@@ -156,6 +156,7 @@ export class SliderComponent implements OnInit {
   currentControls: string[];
   prevSlideId: number;
   nameString: string;
+  controlValues = {};
 
   get slide(): ISlide {
     return this.sliderService.slide;
@@ -178,38 +179,8 @@ export class SliderComponent implements OnInit {
     return this.sliderService.nextStop;
   }
 
-  setOptions(
-    questionId: number,
-    optionLength: number,
-    slideIndex: number,
-    init: boolean = false
-  ): void {
-    if (this.currentControls.length < 1 || init) {
-      this.currentControls = [];
-    }
-    if (this.prevSlideId !== questionId) {
-      let index: number;
-      for (index = 0; index < optionLength; index++) {
-        this.currentControls.push(`option${slideIndex}${questionId}`);
-      }
-      this.buildForm();
-      this.prevSlideId = questionId;
-    }
-  }
 
-  buildForm(): void {
-    const stb = {};
-    this.currentControls.forEach(name => {
-      stb[name] = new FormControl();
-      this.form = new FormGroup(stb); // Creates the root form group for our form model or data
-    });
-  }
-  log(s: string, o: any = null): string {
-    console.warn(s, o);
-    return '';
-  }
-
-  constructor(private sliderService: SliderService) {
+  constructor(private sliderService: SliderService, private fb: FormBuilder) {
     this.sliderService.slides = this.data;
     this.sliderService.modifyId(0);
   }
@@ -222,10 +193,58 @@ export class SliderComponent implements OnInit {
     this.setAllControls();
   }
   initNext(): void {
+    this.addControls(this.currentControls); // Retrieve the value of current controls and add them to value stk for ref
     this.nextStop ? this.todo() : this.sliderService.modifyId(1);
     this.setAllControls();
   }
 
+  addControls(controls: string[]): void {
+    controls.forEach((control: string) => {
+      try{
+        this.controlValues[control] = this.form.get(control).value || '';
+      } catch(error) {
+        this.controlValues[control] = '';
+      }
+    });
+  }
+
+  getControl(control: string): string {
+    const val = this.controlValues[control];
+    return val;
+  }
+
+
+  setOptions(
+    questionId: number,
+    optionLength: number,
+    slideIndex: number,
+    init: boolean = false
+  ): void {
+    if (this.currentControls.length < 1 || init) {
+      this.currentControls = [];
+    }
+    if (this.prevSlideId !== questionId) {
+      let index: number;
+      let option: string;
+      for (index = 0; index < optionLength; index++) {
+        option = `option${slideIndex}${questionId}`;
+        if (this.currentControls.indexOf(option) === -1) {
+         this.currentControls.push(option);
+       }
+      }
+      this.buildForm();
+      this.prevSlideId = questionId;
+    }
+  }
+
+  buildForm(): void {
+    this.addControls(this.currentControls);
+    this.form = this.fb.group(this.controlValues);
+  }
+  log(s: string, o: any = null): string {
+    console.warn(s, o);
+    return '';
+  }
   setAllControls(): void {
     this.currentControls = [];
     this.slides = this.sliderService.slides;
@@ -238,6 +257,10 @@ export class SliderComponent implements OnInit {
     });
   }
 
-  save(): void {}
-  todo(): void {}
+  save(): void {
+    return this.form.value;
+  }
+  todo(): AbstractControl | null {
+    return this.form.get('option11');
+  }
 }

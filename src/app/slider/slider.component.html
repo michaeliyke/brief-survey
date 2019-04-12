@@ -15,13 +15,14 @@ action="actions.php"
       <span class="questionId">{{ quest.questionId }}</span>
       {{ quest.question }}
     </h5>
-    <p *ngFor="let option of quest.options; let i = index">
+    <p *ngFor="let option of quest.options; let i = index;">
       <input
       type="radio"
       class="radio-button"
       [name]="'option'+slide.slideIndex+quest.questionId"
       [formControlName]="'option'+slide.slideIndex+quest.questionId"
       [value]="'S' + slide.slideIndex + 'Q' + quest.questionId + 'O' + i"
+      [checked]="getControl('option'+slide.slideIndex+quest.questionId) === 'S' + slide.slideIndex + 'Q' + quest.questionId + 'O' + i "
       />
       <label for="option">{{option}}</label>
     </p>
@@ -43,4 +44,6 @@ action="actions.php"
     </div>
   </div>
 </form>
-
+{{currentControls}} <br>
+<!-- {{todo()?.value}} <br /> -->
+{{save() | json}}
