@@ -42,7 +42,7 @@ export class SliderComponent implements OnInit {
           options: ['You', 'me', 'them', 'us']
         }
       ]
-    },/* 
+    },/*
     {
       slideIndex: 3,
       questions: [
@@ -193,7 +193,7 @@ export class SliderComponent implements OnInit {
     this.setAllControls();
   }
   initNext(event: Event): void {
-   if( this.checkSelection(event)) {
+   if( this.checkSelection(event) === true) {
     this.addControls(this.currentControls); // Retrieve the value of current controls and add them to value stk for ref
     this.nextStop ? this.submitSurvey() : this.sliderService.modifyId(1);
     this.setAllControls();
@@ -261,7 +261,7 @@ export class SliderComponent implements OnInit {
   checkSelection(event: Event): boolean {
     for (const control of this.currentControls) {
       const cont = this.form.get(control);
-      if (cont.invalid === false) {
+      if (cont.invalid === true) {
         alert('Sorry! Navigation can not occur right now.');
         return false;
       }
