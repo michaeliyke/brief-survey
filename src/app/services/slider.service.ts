@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ISlide } from '../islide';
 import { IQuestion } from '../iquestion';
-import { FormControl } from '@angular/forms';
 import { SurveyData } from '../interfaces/survey-data';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -35,11 +36,28 @@ export class SliderService {
   questionsData: object;
   constructor(public http: HttpClient) {}
 
-  getQuestionsData(): void {
-    this.http.get('https://jsonplaceholder.typicode.com/posts/1')
-    .subscribe((payload) => {
-      this.questionsData = payload;
-    });
+  getQuestionsData(): Observable<ISlide[]> {
+    return this.http.get<ISlide[]>('../../assets/short.json').pipe(
+      tap((data) => {
+        return; // console.log('Server payload', JSON.stringify(data));
+      }),
+      catchError(this.handleError)
+    );
+  }
+  handleError(error: HttpErrorResponse) {
+    let msg = '';
+    if (error.error instanceof ErrorEvent) {
+      msg = `An error occured: ${error.error.message}`;
+    } else {
+      msg = `Server returned code: ${error.status}, error message is ${error.message}`;
+    }
+    console.log(msg);
+    return throwError(msg);
+  }
+  resetSlides() {
+    this.slideId = 0;
+    this.nextStop = false;
+    this.prevStop = true;
   }
   modifyId(num: number): number {
     const id = this.slideId + num;

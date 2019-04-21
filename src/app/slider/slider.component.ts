@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { SliderService } from '../services/slider.service';
 import { ISlide } from '../islide';
 import { IQuestion } from '../iquestion';
-import { FormGroup, FormControl, AbstractControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Survey, SurveyData } from '../interfaces/survey-data';
+import { PopupService } from '../services/popup.service';
 
 @Component({
   selector: 'app-slider',
@@ -11,144 +12,9 @@ import { Survey, SurveyData } from '../interfaces/survey-data';
   styleUrls: ['./slider.component.css']
 })
 export class SliderComponent implements OnInit {
-  data: ISlide[] = [
-    {
-      slideIndex: 1,
-      questions: [
-        {
-          questionId: 1,
-          question: 'Are you often ticked off?',
-          options: ['yea I am', 'off course not', 'Not sure!']
-        },
-        {
-          questionId: 2,
-          question:
-            'I always wake up early but as soon as it\'s eight at night I fling me over the bed',
-          options: ['That\'s me', 'Not me', 'That may be me', 'It depends']
-        }
-      ]
-    },
-    {
-      slideIndex: 2,
-      questions: [
-        {
-          questionId: 3,
-          question: 'I don\'t get angry when I am hungry. ',
-          options: ['True', 'False', 'Both', 'It depends']
-        },
-        {
-          questionId: 4,
-          question: 'If I look at a mirror,  who will I see?',
-          options: ['You', 'me', 'them', 'us']
-        }
-      ]
-    },
-    {
-      slideIndex: 3,
-      questions: [
-        {
-          questionId: 5,
-          question: 'Are you the kind that hates anything beans with passion?',
-          options: ['Yes', 'No', 'It\'s hard to say', 'Not sure']
-        },
-        {
-          questionId: 6,
-          question: 'I took an egg out of a dozens eggs. Ho many do I have?',
-          options: [11, 1, 12, 13]
-        }
-      ]
-    },
-    {
-      slideIndex: 4,
-      questions: [
-        {
-          questionId: 7,
-          question: 'I may eat rice but I never feel like doing so.',
-          options: ['Not really', 'Exactly', 'Not all', 'MAy be']
-        },
-        {
-          questionId: 8,
-          question:
-            'I\'m not a programmer but we are three on our tech team. Felix is on Network, who am I?',
-          options: [
-            'Network Engr',
-            'Database Administrator',
-            'Programmer',
-            'None'
-          ]
-        }
-      ]
-    },
-    {
-      slideIndex: 5,
-      questions: [
-        {
-          questionId: 9,
-          question:
-            'Nobody should ever mention the name \'beans\' to me nor any of its derivatives. Never!',
-          options: [
-            'That\'s right!',
-            'No, that\'s not right!',
-            'I\'m biased',
-            'I\'m fine both ways'
-          ]
-        }
-      ]
-    },
-    {
-      slideIndex: 6,
-      questions: [
-        {
-          questionId: 10,
-          question:
-            'If you cook garri, I will eat. But I never will cook garri on a day. That\'s how I feel about it.',
-          options: [
-            'Not true',
-            'True!',
-            'Can\'t say for certain',
-            'Works for me either way'
-          ]
-        }
-      ]
-    },
-    {
-      slideIndex: 7,
-      questions: [
-        {
-          questionId: 11,
-          question:
-            'I may occasionaly use superghetti or noodles, but please nobody should speak to me about any heavier food.',
-          options: [
-            'Typical!',
-            'Nope! That can\'t be',
-            'It\'s debatable',
-            'No comment'
-          ]
-        },
-        {
-          questionId: 12,
-          question:
-            'What is my name?',
-          options: [
-            'No idea!',
-            'Iyke',
-            'What ever I say!',
-            'Not sure what your name is'
-          ]
-        }
-      ]
-    }
-  ];
-  questions = [
-    'Are you the kind that hates anything beans with passion?',
-    'I may eat rice but I never feel like doing so.',
-    'Nobody should ever mention the name \'beans\' nor any of its derivatives to me. Never!',
-    'If you cook garri, I will eat. But I never will cook garri any day. That\'s how I feel about it.',
-    'I may occasionaly use superghetti or noodles, but please nobody should speak to me about any heavier food.'
-  ];
-
   slides: ISlide[];
   question: string;
+  questions: IQuestion[];
   formControls: FormControl[];
   form: FormGroup; // In place of customerForm: FormGroup;
   survey: Survey = new Survey(); // In place of customer = new Customer()
@@ -170,9 +36,6 @@ export class SliderComponent implements OnInit {
     return lastQuestion.questionId;
   }
 
-  get message(): string {
-    return this.questions[this.sliderService.slideId];
-  }
   get prevStop(): boolean {
     return this.sliderService.prevStop;
   }
@@ -180,36 +43,71 @@ export class SliderComponent implements OnInit {
     return this.sliderService.nextStop;
   }
   submitClicked = false;
+  dataSent = false;
+  showSend = false;
+  disableSend = false;
+  datum: ISlide[];
 
 
-  constructor(private sliderService: SliderService, private fb: FormBuilder) {
-    this.sliderService.slides = this.data;
-    this.sliderService.modifyId(0);
+  constructor(private sliderService: SliderService, private fb: FormBuilder, private popupService: PopupService) {
+    // this.sliderService.slides = this.data;
   }
 
   ngOnInit() {
-    this.setAllControls();
+    // this.buildForm();
+    this.sliderService.getQuestionsData().subscribe(
+      (payload) => {
+        this.datum = payload;
+        this.sliderService.slides = payload;
+        this.sliderService.modifyId(0);
+        this.questions = this.slide.questions;
+        this.setAllControls();
+      },
+      (error) => {
+        console.log(error);
+        // Here we show that something went wrong in the way of data coming along
+      }
+    );
   }
   initPrev(): void {
     this.submitClicked = false;
+    this.showSend = false;
     this.sliderService.modifyId(-1);
     this.setAllControls();
   }
   initNext(boo: boolean = false): void {
-    if (true) {
-      //  if( this.checkSelection(event) === true ) {
+
+    // if (true) {
+       if (this.checkSelection() === true ) {
       this.addControls(this.currentControls);
       this.sliderService.modifyId(1);
       // Retrieve the value of current controls and add them to value stk for ref
       if (this.nextStop && boo === true) {
         if (this.submitClicked === true) {
-          this.submitSurvey();
+          this.showSend = true;
         } else {
           this.submitClicked = true;
+          this.showSend = true;
         }
       }
       this.setAllControls();
     }
+  }
+
+  submitSurvey(): void {
+    this.submitClicked = false;
+    this.dataSent = true;
+    this.disableSend = true;
+    this.showSend = false;
+    console.warn(this.survey.json());
+    this.popupService.showPopup('Your survey has been recieved successfuly', 'success');
+    this.resetControls();
+  }
+  resetControls() {
+    this.sliderService.resetSlides();
+    this.controlValues = {};
+    this.currentControls = [];
+    this.setAllControls();
   }
 
   addControls(controls: string[]): void {
@@ -274,7 +172,7 @@ export class SliderComponent implements OnInit {
     console.warn(s);
     return '';
   }
-  setAllControls(): void {
+  setAllControls(init: boolean = false): void {
     this.currentControls = [];
     this.slides = this.sliderService.slides;
     this.slide.questions.forEach((question, i) => {
@@ -286,21 +184,17 @@ export class SliderComponent implements OnInit {
     });
   }
 
-  checkSelection(event: Event): boolean {
+  checkSelection(): boolean {
     for (const control of this.currentControls) {
       const cont = this.form.get(control);
       if (cont.invalid === true) {
-        alert('Sorry! Navigation can not occur right now.');
+        this.popupService.showPopup('Please ensure you select all the options that apply to you before you proceed', 'danger');
         return false;
       }
     }
     return true;
   }
-  submitSurvey(): void {
-    this.submitClicked = false;
-    // console.warn(JSON.stringify(this.controlValues));
-    console.warn('Coming at you ', this.survey.json());
-  }
+
 
 
 }

@@ -16,6 +16,6 @@ export class AppComponent implements OnInit {
 
   constructor(private sliderService: SliderService) {}
 
-  ngOnInit(){}
- 
+  ngOnInit() {}
+
 }

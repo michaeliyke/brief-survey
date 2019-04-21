@@ -1,4 +1,7 @@
+<app-popup>
+</app-popup>
 <form
+*ngIf="slides && form"
 action="actions.php"
   class="slide-questions"
   [formGroup]="form"
@@ -46,17 +49,24 @@ action="actions.php"
     </div>
     <div class="">
       <button
+      *ngIf="showSend === false"
       [type]="nextStop ? 'submit' : 'button'"
       class="btn btn-primary"
       (click)="nextStop ? initNext(true): initNext(false)"
       >
         {{ nextStop ? 'Submit survey' : 'Next slide' }}
       </button>
+      <button
+      *ngIf="showSend === true"
+      [type]="'submit'"
+      class="btn btn-danger"
+      (click)="submitSurvey()"
+      > Send data</button>
     </div>
   </div>
 </form>
-Valid: {{form.valid}}; Prestine: {{form.pristine}};
+<!-- Valid: {{form.valid}}; Prestine: {{form.pristine}}; -->
  <br>
- {{currentControls}}
+ <!-- {{currentControls}} -->
 <!-- {{todo()?.value}} <br /> -->
 <!-- {{form.value}} -->
