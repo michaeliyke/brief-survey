@@ -1,0 +1,8 @@
+<p>
+  <ngb-alert *ngIf="successMessage" [type]="popupType" (close)="successMessage = null" [dismissible]="false">
+    <strong>{{popupType === 'success' ? 'SUCCESS!': 'Warning!'}}</strong> {{ successMessage }}
+  </ngb-alert>
+</p>
+<!-- <p>
+  <button class="btn btn-primary" (click)="changeSuccessMessage()">Change message</button>
+</p> -->

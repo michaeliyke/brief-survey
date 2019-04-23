@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from './services/data.service';
+import { SliderService } from './services/slider.service';
+
 
 @Component({
   selector: 'app-root',
@@ -7,19 +8,14 @@ import { DataService } from './services/data.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'survey';
-  errorMsg: string;
-  data: object;
-  constructor(private dataService: DataService) {}
-  ngOnInit(): void {
-    this.dataService.getData().subscribe(
-      (data) => {
-        this.data = data;
-      },
-      (error) => {
-        this.errorMsg = error as any;
-      }
-    );
+  title = 'Tut Pro School Survey';
 
+  get slideId(): number {
+    return this.sliderService.slideId;
   }
+
+  constructor(private sliderService: SliderService) {}
+
+  ngOnInit() {}
+
 }
