@@ -12,3 +12,6 @@ The steps are very painless. Only your name and email are required to get starte
 
 ### Project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.0.
 To know more about the Angular CLI use `ng help` or check out the [`ng help` online](https://github.com/angular/angular-cli/blob/master/README.md).
+=======
+### This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.0.
+To get more help on the Angular CLI use `ng help` or go check out the [`ng help` online](https://github.com/angular/angular-cli/blob/master/README.md).
